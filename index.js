@@ -1,51 +1,37 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
-const session = require('express-session');
-const corsOptions = require('./config/corsOptions');
-const multer = require('multer')
-const errorHandler = require('./middleware/errorHandler');
-const {connectDb, sessionCollection} = require('./config/db');
-const auth = require('./middleware/authentication');
-const bodyParser = require('body-parser');
+const express = require("express");
+const connectDB = require("./db");
+const cors = require("cors");
 
-const PORT = process.env.PORT || 3000;
 const app = express();
-app.set("trust proxy", 1);
-connectDb()
 
-app.use(cors(corsOptions))
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
+// Middleware
+app.use(express.json());
+app.use(cors());
 
-app.use('/images', express.static(path.join(__dirname, '/images')));
+// Connect to DB
+connectDB();
 
+// Basic route
+app.get("/", (req, res) => {
+  res.send("🚀 DailySelect Backend is Running!");
+});
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'Il}/mav@hCn*CK!>""Zx=6?%p&oLgz<y',
-    resave: false,
-    saveUninitialized: false,
-    store: sessionCollection(),
-     expires: new Date(Date.now() + (7 * 24 * 60 * 60 * 1000)),
-     cookie: { 
-      expires: new Date(Date.now() + (7 * 24 * 60 * 60 * 1000)),
-      sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax', // must be 'none' to enable cross-site delivery
-      secure: process.env.NODE_ENV === "production", // must be true if sameSite='none'
-    }
-  })
-);
+// Example API route
+app.post("/api/users", (req, res) => {
+  const { name, email } = req.body;
 
+  if (!name || !email) {
+    return res.status(400).json({ message: "Name and Email are required" });
+  }
 
-// ======================= Routes
-app.use('/products', require('./routes/products'));
-app.use('/orders', auth, require('./routes/orders'));
-app.use('/carts', require('./routes/carts'));
-app.use('/categories', require('./routes/categories'));
-app.use('/password', require('./routes/users'));
-app.use('/session', require('./routes/users'));
+  // This is just for testing — DB model can be added later
+  res.json({ message: "User data received", user: { name, email } });
+});
 
-app.use(errorHandler);
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Port
+const PORT = process.env.PORT || 5000;
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
