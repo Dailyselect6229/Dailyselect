@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require("express");
 const connectDB = require("./db");
 const cors = require("cors");
+const { isAdminAuth, authRouter } = require('./middleware/authentication'); // Google login routes
 
 const app = express();
 
@@ -16,6 +17,9 @@ connectDB();
 app.get("/", (req, res) => {
   res.send("🚀 DailySelect Backend is Running!");
 });
+
+// Google Auth route
+app.use('/api/auth', authRouter); // Google login routes
 
 // Example API route
 app.post("/api/users", (req, res) => {
