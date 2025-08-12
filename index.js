@@ -4,8 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const connectDB = require('./db'); // from new code
-const { isAdminAuth, authRouter } = require('./middleware/authentication'); // Google login routes
-
+const { isAdminAuth } = require('./middleware/authentication');
 const app = express();
 app.use(cors()); // or use your corsOptions
 app.use(express.json());
@@ -19,10 +18,11 @@ app.get("/", (req, res) => {
 });
 
 // Google Auth route
-app.use('/api/auth', authRouter); // ✅ Google login routes
+
 
 // Your existing users route
 app.use('/api/users', require('./routes/users'));
+
 
 // Example API route from new code (optional for testing)
 app.post("/api/users-test", (req, res) => {

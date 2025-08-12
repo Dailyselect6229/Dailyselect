@@ -18,7 +18,6 @@ const isJWTAuth = (req, res, next) => {
   }
 };
 
-// ======== Admin Auth Middleware ========
 const isAdminAuth = async (req, res, next) => {
   if (req.session?.islogin) {
     const user = await UserModel.findById(req.session?.user).exec();

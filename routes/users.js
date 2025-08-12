@@ -24,6 +24,6 @@ router.route('/updatepassword/:token')
        .put(userController.updatePassword);
 
 // New routes (added with old naming preserved)
-router.post('/:id/location', auth, userController.updateLocation);
+router.post('/:id/location', auth.isJWTAuth, userController.updateLocation);
 
 module.exports = router;
