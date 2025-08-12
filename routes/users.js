@@ -1,7 +1,10 @@
-const userController = require('../controllers/user.controller');
+// routes/users.js
+const express = require('express');
+const router = express.Router();
+const userController = require('../controllers/user.controller'); // keeping old naming
+const auth = require('../middleware/authentication');
 
-const router = require('express').Router();
-
+// Old routes (kept as is)
 router.route('/')
      .get(userController.isLognin);
 
@@ -15,10 +18,12 @@ router.route('/logout')
        .get(userController.logout);
 
 router.route('/forgetpassword')
-       .post(userController.forgetPassword)
+       .post(userController.forgetPassword);
        
 router.route('/updatepassword/:token')
-       .put(userController.updatePassword)
-        
-module.exports = router;
+       .put(userController.updatePassword);
 
+// New routes (added with old naming preserved)
+router.post('/:id/location', auth, userController.updateLocation);
+
+module.exports = router;

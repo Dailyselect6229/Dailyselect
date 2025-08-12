@@ -1,17 +1,17 @@
+// index.js
 require('dotenv').config();
-const express = require("express");
-const connectDB = require("./db");
-const cors = require("cors");
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const connectDB = require('./db'); // from new code
 const { isAdminAuth, authRouter } = require('./middleware/authentication'); // Google login routes
 
 const app = express();
-
-// Middleware
+app.use(cors()); // or use your corsOptions
 app.use(express.json());
-app.use(cors());
 
 // Connect to DB
-connectDB();
+connectDB(); // ✅ using new function instead of direct mongoose.connect
 
 // Basic route
 app.get("/", (req, res) => {
@@ -19,24 +19,20 @@ app.get("/", (req, res) => {
 });
 
 // Google Auth route
-app.use('/api/auth', authRouter); // Google login routes
+app.use('/api/auth', authRouter); // ✅ Google login routes
 
-// Example API route
-app.post("/api/users", (req, res) => {
+// Your existing users route
+app.use('/api/users', require('./routes/users'));
+
+// Example API route from new code (optional for testing)
+app.post("/api/users-test", (req, res) => {
   const { name, email } = req.body;
-
   if (!name || !email) {
     return res.status(400).json({ message: "Name and Email are required" });
   }
-
-  // This is just for testing — DB model can be added later
   res.json({ message: "User data received", user: { name, email } });
 });
 
 // Port
-const PORT = process.env.PORT || 5000;
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
