@@ -1,30 +1,22 @@
-// routes/users.js
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/user.controller'); // keeping old naming
+const userController = require('../controllers/user.controller');
 const auth = require('../middleware/authentication');
 
-// Old routes (kept as is)
+// Check login session
 router.route('/')
      .get(userController.isLognin);
 
-router.route('/signup')
-     .post(userController.signup);
+// Signup with mobile and OTP (dummy OTP for now)
+router.post('/register', userController.signup);
 
-router.route('/login')
-       .post(userController.login);
+// Login with mobile and OTP (dummy OTP)
+router.post('/login', userController.login);
 
-router.route('/logout')
-       .get(userController.logout);
+// Logout
+router.get('/logout', userController.logout);
 
-router.route('/forgetpassword')
-       .post(userController.forgetPassword);
-       
-router.route('/updatepassword/:token')
-       .put(userController.updatePassword);
-       router.post('/register', userController.signup);
-
-// New routes (added with old naming preserved)
+// Update user location (protected route)
 router.post('/:id/location', auth.isJWTAuth, userController.updateLocation);
 
 module.exports = router;
