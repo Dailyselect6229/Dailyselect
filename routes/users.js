@@ -22,6 +22,7 @@ router.route('/forgetpassword')
        
 router.route('/updatepassword/:token')
        .put(userController.updatePassword);
+       router.post('/register', userController.signup);
 
 // New routes (added with old naming preserved)
 router.post('/:id/location', auth.isJWTAuth, userController.updateLocation);
